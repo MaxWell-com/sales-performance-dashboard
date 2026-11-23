@@ -1,0 +1,20 @@
+{
+  "name": "sales-performance-dashboard",
+  "version": "2.0.0",
+  "description": "Sales performance dashboard: sales vs prior year, plan vs actual, unfulfilled demand, stock cover, executive summary, client agent — Node.js/Express, demo data included",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "NODE_ENV=development node --watch src/server.js",
+    "dev:win": "set NODE_ENV=development&& node --watch src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mssql": "^11.0.1"
+  }
+}

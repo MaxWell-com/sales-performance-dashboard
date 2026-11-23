@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Общий информационный отчет продаж — руководство</title>
+<style>
+  :root{
+    --ground:#f1f5f9; --surface:#fff; --surface-2:#f8fafc; --ink:#0f172a; --ink-soft:#334155; --muted:#64748b;
+    --border:#e2e8f0; --border-strong:#cbd5e1; --accent:#2563eb; --accent-soft:#dbeafe;
+    --good:#16a34a; --good-soft:#dcfce7; --warn:#d97706; --warn-soft:#fef3c7; --crit:#dc2626; --crit-soft:#fee2e2;
+    --sat:#0284c7; --sat-soft:#e0f2fe; --shadow:0 1px 2px rgba(15,23,42,.06),0 8px 24px -12px rgba(15,23,42,.12);
+    --radius:14px; --maxw:960px;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --ground:#0a0f1c; --surface:#111827; --surface-2:#0f1626; --ink:#e8edf5; --ink-soft:#cbd5e1; --muted:#94a3b8;
+    --border:#1e293b; --border-strong:#334155; --accent:#60a5fa; --accent-soft:#17233c;
+    --good:#4ade80; --good-soft:#14251a; --warn:#fbbf24; --warn-soft:#2a2010; --crit:#f87171; --crit-soft:#2a1414;
+    --sat:#38bdf8; --sat-soft:#0c2233; --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.6);
+  }}
+  :root[data-theme="dark"]{
+    --ground:#0a0f1c; --surface:#111827; --surface-2:#0f1626; --ink:#e8edf5; --ink-soft:#cbd5e1; --muted:#94a3b8;
+    --border:#1e293b; --border-strong:#334155; --accent:#60a5fa; --accent-soft:#17233c;
+    --good:#4ade80; --good-soft:#14251a; --warn:#fbbf24; --warn-soft:#2a2010; --crit:#f87171; --crit-soft:#2a1414;
+    --sat:#38bdf8; --sat-soft:#0c2233; --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px 90px}
+  header.hero{max-width:var(--maxw);margin:0 auto;padding:48px 22px 26px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:6px 12px;border-radius:999px}
+  h1{font-size:clamp(27px,4.2vw,40px);line-height:1.12;letter-spacing:-.02em;margin:18px 0 10px;font-weight:800}
+  .lede{font-size:18.5px;color:var(--ink-soft);max-width:66ch;margin:0}
+  .meta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+  .meta-chip{font-size:13px;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:7px 13px;border-radius:999px;display:inline-flex;gap:7px;align-items:center}
+  .meta-chip b{color:var(--ink);font-weight:650}
+  section{margin-top:42px;scroll-margin-top:16px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:16px}
+  .sec-num{font-size:13px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:.04em;border:1.5px solid var(--accent);border-radius:8px;padding:2px 8px;flex:none;line-height:1.5}
+  h2{font-size:clamp(20px,2.6vw,25px);letter-spacing:-.01em;margin:0;font-weight:750}
+  h2 .lname{color:var(--accent)}
+  h2+.sec-sub,.sec-sub{color:var(--muted);margin:6px 0 0;font-size:15px}
+  p{margin:0 0 13px}.prose{max-width:70ch}
+  strong{font-weight:680}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow)}
+  .card+.card{margin-top:14px}
+  .card.hi{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset,var(--shadow)}
+  ul.clean{margin:6px 0 0;padding-left:20px;display:grid;gap:8px;font-size:15px;color:var(--ink-soft)}
+  ul.clean b{color:var(--ink);font-weight:660}
+  .tag{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:999px;color:var(--accent);background:var(--accent-soft)}
+  /* filters */
+  .filters{display:grid;gap:12px}
+  .fitem{border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:14px 18px;box-shadow:var(--shadow)}
+  .fitem h3{margin:0 0 4px;font-size:16px;font-weight:720;display:flex;align-items:center;gap:9px}
+  .fitem p{margin:0;font-size:14.5px;color:var(--ink-soft)}
+  .fitem .ex{margin-top:7px;font-size:13.5px;color:var(--muted)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}
+  .fchip{font-size:12.5px;background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:4px 11px;color:var(--ink-soft)}
+  /* table of contents */
+  .toc{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:720px){.toc{grid-template-columns:1fr}}
+  .toc a{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:15px 17px;box-shadow:var(--shadow);color:inherit;transition:border-color .12s}
+  .toc a:hover{border-color:var(--accent)}
+  .toc .n{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.05em}
+  .toc .t{font-weight:750;font-size:16.5px;color:var(--ink);margin-top:3px}
+  .toc .d{font-size:13.5px;color:var(--muted);margin-top:4px}
+  /* sheet visuals */
+  .viz{border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:14px 17px;box-shadow:var(--shadow)}
+  .viz+.viz{margin-top:10px}
+  .viz h4{margin:0 0 4px;font-size:15.5px;font-weight:720;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .viz .kind{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:2px 9px}
+  .viz p{margin:0;font-size:14.5px;color:var(--ink-soft)}
+  .subh{margin:20px 0 10px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  /* metrics table */
+  .tblwrap{overflow-x:auto}
+  table.gl{width:100%;border-collapse:collapse;font-size:14.5px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+  table.gl th,table.gl td{text-align:left;padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+  table.gl thead th{background:var(--surface-2);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700}
+  table.gl td:first-child{font-weight:660;color:var(--ink);white-space:nowrap}
+  table.gl tr:last-child td{border-bottom:0}
+  .pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;display:inline-block}
+  .pill.g{color:var(--good);background:var(--good-soft)} .pill.y{color:var(--warn);background:var(--warn-soft)}
+  .pill.r{color:var(--crit);background:var(--crit-soft)} .pill.b{color:var(--sat);background:var(--sat-soft)}
+  .lightrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+  .lchip{border:1px solid var(--border);border-left:5px solid var(--muted);border-radius:10px;padding:8px 12px;background:var(--surface);font-size:14px;min-width:160px}
+  .lchip.g{border-left-color:var(--good)} .lchip.r{border-left-color:var(--crit)}
+  .lchip b{display:block;font-size:13px;color:var(--muted);font-weight:600}
+  .note{border-left:3px solid var(--warn);background:var(--warn-soft);border-radius:0 12px 12px 0;padding:13px 17px;margin:14px 0}
+  .note.ok{border-color:var(--good);background:var(--good-soft)} .note.crit{border-color:var(--crit);background:var(--crit-soft)}
+  .note h3{margin:0 0 5px;font-size:15px;font-weight:720}
+  .note p{margin:0;font-size:14.5px;color:var(--ink-soft)}
+  .backtop{display:inline-block;margin-top:12px;font-size:13px;color:var(--accent);text-decoration:none}
+  .faq{display:grid;gap:12px}
+  .faq details{background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:2px 18px}
+  .faq summary{cursor:pointer;font-weight:700;font-size:15.5px;padding:14px 0;list-style:none}
+  .faq summary::marker{content:""}.faq summary::before{content:"▸ ";color:var(--accent)}
+  .faq details[open] summary::before{content:"▾ "}
+  .faq p{font-size:15px;color:var(--ink-soft);padding-bottom:14px;margin:0}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:1px 6px}
+  footer{margin-top:50px;padding-top:18px;border-top:1px solid var(--border);color:var(--muted);font-size:13.5px}
+  @media print{body{background:#fff}.card,.viz,table.gl,.faq details,.fitem,.toc a{box-shadow:none}.faq details[open] p{display:block}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="eyebrow">📊 Аналитика продаж</span>
+  <h1>Общий информационный отчет продаж</h1>
+  <p class="lede">Руководство пользователя. Сначала — как пользоваться <strong>фильтрами и отборами</strong>, затем по каждому листу: <strong>что можно посмотреть и что означают показатели</strong>.</p>
+  <div class="meta-row">
+    <span class="meta-chip">Данные: <b>демо</b> или вживую из OLAP-куба и DWH</span>
+    <span class="meta-chip">Период по умолчанию: <b>текущий год с января по сегодня</b></span>
+    <span class="meta-chip">4 листа · выгрузка в <b>Excel</b></span>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ═══ 1. FILTERS AND SLICERS ═══ -->
+  <section id="filters">
+    <div class="sec-head"><span class="sec-num">01</span><h2>Фильтры и отборы — как пользоваться</h2></div>
+    <p class="prose">Фильтры на верхней панели действуют <strong>сразу на все листы</strong> отчета. Главное правило — <strong>ассоциативность</strong>: выбор в одном отборе сужает варианты во всех остальных, поэтому фильтры можно накладывать один на другой.</p>
+    <div class="filters">
+      <div class="fitem"><h3>🗓️ Период с / по и месяцы сравнения</h3>
+        <p>«Период с / по» задает диапазон месяцев‑лет; «Месяцы сравнения» — какие месяцы внутри диапазона учитывать (можно взять, например, только январь–февраль за несколько лет). <b>АППГ</b> (аналогичный период прошлого года) считается автоматически — тот же период годом ранее.</p>
+        <p class="ex">По умолчанию при входе: с января текущего года по текущий месяц.</p></div>
+      <div class="fitem"><h3>🔗 Ассоциативные фильтры (главное)</h3>
+        <p>Выбор в любом отборе оставляет в остальных только подходящие значения. Сам отбор при этом не сужает себя — в нем по‑прежнему видны все значения, чтобы можно было сменить выбор.</p>
+        <p class="ex">Пример: выбрали марку «ГАММА» → в «Номенклатуре» останутся только ее позиции, а «Подразделения» и «Клиенты» — только связанные с ней.</p></div>
+      <div class="fitem"><h3>🧩 Отборы по номенклатуре и оргструктуре</h3>
+        <p>Мультивыбор с поиском и кнопками «выбрать все / снять». Доступные отборы:</p>
+        <div class="chips">
+          <span class="fchip">Вышестоящее подразделение</span><span class="fchip">Подразделение</span>
+          <span class="fchip">Партнер (клиент)</span><span class="fchip">Тов. группа (верхний ур.)</span>
+          <span class="fchip">Товарная группа</span><span class="fchip">Бренд</span><span class="fchip">Марка (торговая)</span>
+          <span class="fchip">Вид номенклатуры</span><span class="fchip">Мотивация (верхний)</span>
+          <span class="fchip">Мотивация (нижний)</span><span class="fchip">Номенклатура</span><span class="fchip">Этап развития</span>
+        </div></div>
+      <div class="fitem"><h3>💱 Единицы и цены</h3>
+        <p><b>₽ / шт</b> — единицы по всему отчету. <b>Цены продаж:</b> «фактические» (как продано) или «базовые» (пересчет по прайсу).</p></div>
+      <div class="fitem"><h3>📦 Запас в днях: базы расчета</h3>
+        <p>База остатка — <b>в наличии</b> или <b>свободный</b>; база расхода — <b>ср. продажи за 3 мес</b> или <b>прогноз</b>. Влияет на «запас в днях» и зоны запаса.</p></div>
+      <div class="fitem"><h3>🎯 Быстрые отборы кликом</h3>
+        <p>По <b>зонам запаса</b> (клик по цветной легенде), по классу <b>ABC</b> и по <b>новинкам</b> (клик по плашкам KPI) — сужают выборку так же, как обычные фильтры.</p></div>
+      <div class="fitem"><h3>🧹 Активные фильтры и сброс</h3>
+        <p>Все примененные отборы показаны чипами в блоке «Активные фильтры»: крестик на чипе снимает один, «Снять все» — сразу все.</p></div>
+    </div>
+  </section>
+
+  <!-- ═══ 2. TABLE OF CONTENTS ═══ -->
+  <section id="toc">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Оглавление — листы отчета</h2></div>
+    <p class="prose">Отчет состоит из четырех листов (переключаются кнопками вверху). Что смотреть и какие показатели — под каждым листом ниже.</p>
+    <div class="toc">
+      <a href="#s-general"><div class="n">ЛИСТ 1</div><div class="t">Общий отчет</div><div class="d">Продажи, АППГ, план, дефектура/сервис, производство, остатки и запас, детализация по номенклатуре и клиентам.</div></a>
+      <a href="#s-planfact"><div class="n">ЛИСТ 2</div><div class="t">Выполнение плана и сравнение продаж</div><div class="d">План‑факт по подразделениям и аналитике мотивации, оперплан и стратплан, % выполнения, Δ% к прошлому году.</div></a>
+      <a href="#s-exec"><div class="n">ЛИСТ 3</div><div class="t">Резюме для руководства</div><div class="d">Светофор состояния, ключевые выводы, зоны риска и роста с раскрытием топ‑30.</div></a>
+      <a href="#s-pivot"><div class="n">ЛИСТ 4</div><div class="t">Конструктор (сводная)</div><div class="d">Свой срез по любым разрезам в строках и колонках + выгрузка в Excel.</div></a>
+    </div>
+  </section>
+
+  <!-- ═══ SHEET 1 ═══ -->
+  <section id="s-general">
+    <div class="sec-head"><span class="sec-num">03</span><h2><span class="lname">Лист «Общий отчет»</span></h2></div>
+    <p class="sec-sub">Полная картина по выбранным маркам/периоду: динамика, сервис, производство, остатки и детальные таблицы.</p>
+    <div class="subh">Что можно посмотреть</div>
+    <div class="anatomy" style="display:grid;gap:10px">
+      <div class="viz"><h4>Плитки KPI (сверху) <span class="kind">сводка</span></h4><p>Итоги за период: продажи и АППГ, планы и прогноз, дефектура и уровень сервиса, остатки и средний запас, новинки. «Зоны запаса» — таблица: дефицит, норма и пересток с долей и числом позиций в каждой зоне; в зоны входят позиции, у которых есть остаток и продажи. Строки зон запаса, плашки ABC и новинок кликабельны — работают как фильтры.</p></div>
+      <div class="viz"><h4>Динамика продаж vs АППГ <span class="kind">график</span></h4><p>Продажи текущего периода и аналогичного периода прошлого года по выбранным месяцам; пунктир — тренд текущего.</p></div>
+      <div class="viz"><h4>Дефектура <span class="kind">график</span></h4><p>Неудовлетворенный спрос (недоотгрузка) по периоду и фильтрам; подразделение определяется через договор.</p></div>
+      <div class="viz"><h4>Запасы относительно продаж <span class="kind">график · 2 режима</span></h4><p>Переключатель «Остаток и продажи» / «Запас в днях». Показывает, что скоро закончится, а что залежалось.</p></div>
+      <div class="viz"><h4>Исполнение плана производства <span class="kind">график</span></h4><p>Заявки / план / произведено по месяцам, в штуках. Реагирует на бренд/номенклатуру/период (без разреза по подразделению).</p></div>
+      <div class="viz"><h4>Детализация по номенклатуре <span class="kind">таблица</span></h4><p>Иерархия <b>торговая марка → номенклатура</b> (▸/▾). Продажи, ср/мес, АППГ, план (расч.), прогноз, дефектура, производство, остаток и запас в днях, сервис, ABC. Клик по строке — помесячная детализация.</p></div>
+      <div class="viz"><h4>Детализация по клиентам (партнерам) <span class="kind">таблица</span></h4><p>Те же показатели в разрезе клиентов; план — аллоцированный на выбранные позиции. Клик по строке — продажи и дефектура по месяцам.</p></div>
+    </div>
+    <div class="subh">Что означают показатели этого листа</div>
+    <div class="tblwrap"><table class="gl"><thead><tr><th>Показатель</th><th>Что означает</th></tr></thead><tbody>
+      <tr><td>Продажи ₽ / шт</td><td>Отгрузки за период. «Базовые» цены — пересчет по прайсу вместо фактической цены отгрузки.</td></tr>
+      <tr><td>АППГ</td><td>Аналогичный период прошлого года — те же месяцы годом ранее.</td></tr>
+      <tr><td>План (расч.)</td><td>Операционный план группы мотивации, распределенный на позиции по долям продаж за 5 мес; непромаркированный план — запасным способом на проданные SKU клиента.</td></tr>
+      <tr><td>Прогноз</td><td>«Аналитический прогноз продаж» из учетной системы (через DWH; по номенклатуре, в штуках; в ₽ — по средней цене за 5 мес).</td></tr>
+      <tr><td>Дефектура</td><td>Неудовлетворенный спрос (недоотгрузка) в ₽ и шт.</td></tr>
+      <tr><td>Уровень сервиса</td><td>Продажи ÷ (Продажи + Дефектура). <span class="pill g">≥95%</span> <span class="pill y">90–95%</span> <span class="pill r">&lt;90%</span></td></tr>
+      <tr><td>Остаток: в наличии / свободный</td><td>Физический остаток / свободный к продаже = В наличии − Отгружается − В резерве.</td></tr>
+      <tr><td>Запас в днях</td><td>Остаток ÷ дневной расход (продажи 3 мес или прогноз). Зоны: <span class="pill b">&lt;15 дефицит</span> <span class="pill g">30–90 норма</span> <span class="pill r">&gt;180 затоваривание</span>.</td></tr>
+      <tr><td>ABC</td><td>По продажам за период: A ≤ 80% накопит., B ≤ 95%, C — остальное.</td></tr>
+      <tr><td>Новинки</td><td>Класс по году первой продажи позиции (2025 / 2026).</td></tr>
+    </tbody></table></div>
+    <a class="backtop" href="#toc">↑ к оглавлению</a>
+  </section>
+
+  <!-- ═══ SHEET 2 ═══ -->
+  <section id="s-planfact">
+    <div class="sec-head"><span class="sec-num">04</span><h2><span class="lname">Лист «Выполнение плана и сравнение продаж»</span></h2></div>
+    <p class="sec-sub">План‑факт и сравнение с прошлым годом в оргструктуре и по мотивации.</p>
+    <div class="subh">Что можно посмотреть</div>
+    <div style="display:grid;gap:10px">
+      <div class="viz"><h4>По подразделениям <span class="kind">таблица</span></h4><p>Разрез <b>Вышестоящее подразделение → Подразделение → Аналитика мотивации</b>. Продажи, АППГ, оперплан и стратплан, % выполнения и Δ% к прошлому периоду. Первая строка — общий итог; строки раскрываются.</p></div>
+      <div class="viz"><h4>По аналитике мотивации <span class="kind">таблица</span></h4><p>То же, но в разрезе только аналитики мотивации (по всем подразделениям сразу).</p></div>
+    </div>
+    <div class="subh">Что означают показатели этого листа</div>
+    <div class="tblwrap"><table class="gl"><thead><tr><th>Показатель</th><th>Что означает</th></tr></thead><tbody>
+      <tr><td>Операционный план</td><td>Оперплан из куба, аллоцированный по группам мотивации (непромаркированный остаток — запасным способом). Совпадает с планом «Общего отчета».</td></tr>
+      <tr><td>Стратегический план</td><td>Из DWH (сценарий «План по клиентам», статья «…по подразделениям … по месяцам»), разложен по подразделению × мотивации × месяц.</td></tr>
+      <tr><td>% выполнения</td><td>Продажи ÷ План · 100% (отдельно для оперплана и стратплана).</td></tr>
+      <tr><td>Δ% к прошлому периоду</td><td>Рост/падение продаж относительно АППГ.</td></tr>
+      <tr><td>₽ / шт</td><td>По переключателю сверху; план в штуках — по средней цене за 5 мес.</td></tr>
+    </tbody></table></div>
+    <div class="note"><h3>Почему выполнение плана бывает «завышенным»</h3><p>Оперплан заведен на плановый год. Если выбран период шире планового года, продажи охватывают несколько лет, а план — один, и % выполнения выглядит огромным. Смотрите в пределах планового года.</p></div>
+    <a class="backtop" href="#toc">↑ к оглавлению</a>
+  </section>
+
+  <!-- ═══ SHEET 3 ═══ -->
+  <section id="s-exec">
+    <div class="sec-head"><span class="sec-num">05</span><h2><span class="lname">Лист «Резюме для руководства»</span></h2></div>
+    <p class="sec-sub">Автоматическая сводка состояния и отклонений. Все в ₽. При первом открытии период сам встает на плановый год.</p>
+    <div class="subh">Что можно посмотреть</div>
+    <div style="display:grid;gap:10px">
+      <div class="viz"><h4>Светофор <span class="kind">плитки</span></h4><p>Состояние по ключевым метрикам цветом (🟢/🟡/🔴). Пороги — в таблице ниже.</p>
+        <div class="lightrow">
+          <div class="lchip g"><b>% выполнения плана</b>🟢 ≥95 · 🟡 80–95 · 🔴 &lt;80</div>
+          <div class="lchip g"><b>Динамика к АППГ</b>🟢 ≥0 · 🟡 −10…0 · 🔴 &lt;−10</div>
+          <div class="lchip g"><b>Уровень сервиса</b>🟢 ≥95 · 🟡 90–95 · 🔴 &lt;90</div>
+          <div class="lchip g"><b>Запас</b>🟢 15–180 дн · 🔴 &lt;15 или &gt;180</div>
+        </div></div>
+      <div class="viz"><h4>Ключевые выводы <span class="kind">текст</span></h4><p>Автоматические формулировки: главные отклонения, вклад в отставание и точки роста.</p></div>
+      <div class="viz"><h4>Зоны риска и роста <span class="kind">4 разреза</span></h4><p><b>Вклад = продажи − база</b> (оперплан, а если плана нет — АППГ). Вклад &lt;0 → <b>риск</b> (отстаем), &gt;0 → <b>рост</b> (опережаем). Разрезы: подразделение, аналитика мотивации, бренд/марка, клиент/канал. <b>Клик по плашке разреза</b> раскрывает <b>топ‑30</b> элементов.</p></div>
+    </div>
+    <a class="backtop" href="#toc">↑ к оглавлению</a>
+  </section>
+
+  <!-- ═══ SHEET 4 ═══ -->
+  <section id="s-pivot">
+    <div class="sec-head"><span class="sec-num">06</span><h2><span class="lname">Лист «Конструктор (сводная)»</span></h2></div>
+    <p class="sec-sub">Собственный отчет из всех данных в любых разрезах — как сводная таблица, с выгрузкой в Excel.</p>
+    <div class="subh">Что можно посмотреть / сделать</div>
+    <div style="display:grid;gap:10px">
+      <div class="viz"><h4>Строки и колонки <span class="kind">разрезы</span></h4><p>Добавьте измерения в «Строки» и «Колонки»; порядок задает вложенность (напр. колонки «Год → Месяц»). Переставить/убрать — стрелками и крестиком на чипе.</p></div>
+      <div class="viz"><h4>Показатели <span class="kind">значения</span></h4><p>Отметьте нужные: продажи ₽/шт, АППГ, Δ к АППГ, дефектура, сервис, прогноз, производство, остаток и др. Итоги по строкам и колонкам считаются автоматически.</p></div>
+      <div class="viz"><h4>Выгрузка в Excel <span class="kind">.xlsx</span></h4><p>Кнопка «⤓ Выгрузить в Excel» сохраняет весь результат (все строки), числа — числами.</p></div>
+    </div>
+    <div class="note"><h3>Особенности данных в сводной</h3><p><b>Остаток, прогноз и производство</b> привязаны к позиции и периоду, но <b>не</b> имеют разреза по подразделению и клиенту — при таком разрезе они попадут в строку <b>«(н/д)»</b>. Продажи, АППГ, дефектура и сервис работают в любом разрезе. <b>Остаток</b> в сводной — снимок на конец периода.</p></div>
+    <a class="backtop" href="#toc">↑ к оглавлению</a>
+  </section>
+
+  <!-- ═══ DATA SOURCES ═══ -->
+  <section id="sources">
+    <div class="sec-head"><span class="sec-num">07</span><h2>Источники и обновление данных</h2></div>
+    <div class="tblwrap"><table class="gl"><thead><tr><th>Источник</th><th>Что дает</th></tr></thead><tbody>
+      <tr><td>OLAP-куб</td><td>Продажи, АППГ, дефектура, остатки, производство, операционный план (основной источник, вживую).</td></tr>
+      <tr><td>DWH (MS SQL)</td><td>Стратегический план (в DWH он свежее, чем в кубе), аналитический прогноз продаж, торговые марки и базовые цены — данные учетной системы, которые DWH загружает ежедневно.</td></tr>
+      <tr><td>Остатки у клиента</td><td>Только на листе «Агент Клиента»: по данным сети (проблемный, зависший сток) или sell-out дистрибьютора.</td></tr>
+      <tr><td>Демо-данные</td><td>Синтетический набор (режим по умолчанию): правдоподобные продажи, планы и остатки вымышленного производителя — отчет работает без инфраструктуры.</td></tr>
+    </tbody></table></div>
+    <div class="note ok"><h3>Актуальность</h3><p>Снимок строится вживую и кэшируется (по умолчанию до 6 ч); время сборки — «Обновлено» в шапке отчета. Пока первый снимок после запуска собирается (около минуты), показывается страница «Отчет собирается», она обновляется сама. Если куб временно недоступен — показывается предыдущий снимок, а если его нет — страница с причиной ошибки.</p></div>
+    <a class="backtop" href="#toc">↑ к оглавлению</a>
+  </section>
+
+  <!-- ═══ FAQ ═══ -->
+  <section id="faq">
+    <div class="sec-head"><span class="sec-num">08</span><h2>Частые вопросы</h2></div>
+    <div class="faq">
+      <details><summary>Почему выполнение плана показывает, например, 320%?</summary><p>Скорее всего выбран период шире планового года: продажи охватывают несколько лет, а план заведен на один год. Выберите период в пределах планового года. На листе «Резюме» это уже сделано автоматически.</p></details>
+      <details><summary>Почему остаток / прогноз / производство попали в строку «(н/д)» в сводной?</summary><p>У этих показателей нет разреза по подразделению и клиенту. Если строить сводную с таким разрезом, они собираются в «(н/д)». Стройте их по товарным разрезам и периоду.</p></details>
+      <details><summary>Откуда берется стратегический план?</summary><p>Из DWH (MS SQL), а не из куба — там он свежее. Разрез: подразделение × аналитика мотивации × месяц; на позиции и клиентов разложен по долям продаж уже в отчете.</p></details>
+      <details><summary>Почему свободный остаток меньше, чем «в наличии»?</summary><p>Свободный = В наличии − Отгружается − В резерве. Часть остатка зарезервирована или отгружается.</p></details>
+      <details><summary>Данные не обновились / «OLAP-куб недоступен».</summary><p>Куб мог перегружаться. Отчет покажет прошлый снимок или плашку — обновите страницу позже.</p></details>
+    </div>
+    <a class="backtop" href="#toc">↑ к оглавлению</a>
+  </section>
+
+  <footer>Общий информационный отчет продаж · руководство пользователя. Отчет строится на данных учетных систем или на демо-данных.</footer>
+
+</div>
+</body>
+</html>
